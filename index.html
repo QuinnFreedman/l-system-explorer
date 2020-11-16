@@ -1,0 +1,182 @@
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <style type="text/css">
+            #output:hover .active {
+                background-color: #FF0;
+                color: black;
+                font-weight: bold;
+            }
+            #output:hover .parent-active {
+                color: black;
+            }
+            #output:hover .child-active {
+                color: black;
+                font-weight: bold;
+            }
+            #output {
+                font-family: "Courier New", Courier, monospace;
+                width: 100%;
+                overflow-x: scroll;
+                margin: 10px 0;
+                outline: 1px solid lightgray;
+                padding: 8px;
+                white-space: nowrap;
+                cursor: pointer;
+            }
+            #output:hover {
+                color: lightgray;
+            }
+
+            #canvas {
+                position: absolute;
+                left: 50%;
+                top: 50%;
+                transform: translate(-50%, -50%);
+            }
+
+            #canvas-container {
+                border: 1px solid gray;
+                resize: both;
+                overflow: hidden;
+                width: 500px;
+                height: 500px;
+                /*
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                */
+                position: relative;
+            }
+
+            label {
+                display: inline-block;
+                min-width: 170px;
+                text-align: right;
+                margin-right: 2px;
+            }
+
+            .questionmark {
+                background-color: gray;
+                border-radius: 999px;
+                width: 30px;
+                height: 30px;
+                display: inline-block;
+                text-align: center;
+                line-height: 30px;
+                color: white;
+                position: relative;
+            }
+
+            .questionmark::before {
+                content: '?';
+            }
+
+            .questionmark > * {
+                display: none;
+                text-align: left;
+                background-color: #1E2021;
+                padding: 20px;
+                width: 300px;
+                position: absolute;
+                left: 15px;
+                top: 0;
+                color: #FFF;
+                z-index: 1;
+            }
+            .questionmark:hover > * {
+                display:block;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>L-System Explorer</h1>
+        <div>
+            <label for="angle">Angle</label>
+            <input type="number" name="angle" id="angle" value="45" min="-180" max="180"/>
+            <div class="questionmark">
+                <p>
+                    The angle by which the path will rotate every time a + or - appears.
+                </p>
+            </div>
+        </div>
+        <div>
+            <label for="visible">Drawn Variables</label>
+            <input type="text" name="visible" id="visible" value="A,B"/>
+            <div class="questionmark">
+                <p>
+                    Each of these variables is interpreted as "move forward 1 unit", They are all treated identically when drawing but can be expanded differently by the rules of the system.
+                </p>
+            </div>
+        </div>
+        <div>
+            <label for="invisible">Not-drawn Variables</label>
+            <input type="text" name="invisible" id="invisible" />
+            <div class="questionmark">
+                <p>
+                    These variables are totally skipped over when drawing but they are treated like normal variables when computing the rules.
+                </p>
+            </div>
+        </div>
+        <div>
+            <label for="constants">Constants</label>
+            <input type="text" name="constants" id="constants" value="+,-,[,]" disabled="true" />
+            <div class="questionmark">
+                <div>
+                    <p>This tool only allows a pre-defined set of constants: <code>+</code>,<code>-</code>,<code>[</code>, and <code>]</code>:
+                    </p>
+                    <ul>
+                        <li>+ is interpreted as "turn left by &lt;Angle&gt; degrees"</li>
+                        <li>- is interpreted as "turn right by &lt;Angle&gt; degrees"</li>
+                        <li>[ stores the current state (position and rotation) on a stack</li>
+                        <li>] retrieves the last stored state off the stack</li>
+                    </ul>
+                    <p>
+                        The implicit rule for all constants is <code>x → x</code>, i.e. they persist unchanged into all future iterations.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div>
+            <label for="axium">Axium</label>
+            <input type="text" name="axium" id="axium" value="A"/>
+            <div class="questionmark">
+                <p>
+                    The starting state of the system (i.e. iteration 0).
+                </p>
+            </div>
+        </div>
+        <div>
+            <label>Rules:</label>
+            <div class="questionmark">
+                <p>
+                    In each iteration, each variable is replaced by its correspoding rule (which probably expands it into a series of more variables and constants).
+                </p>
+            </div>
+        </div>
+        <div id="rules">
+            <div data-variable="A">
+                <div><label for="rule_A">A →</label> <input type="text" name="rule_A" id="rule_A" value="B[-A]+A"/></div>
+            </div>
+            <div data-variable="B">
+                <div><label for="rule_B">B →</label> <input type="text" name="rule_B" id="rule_B" value="BB"/></div>
+            </div>
+        </div>
+        <div>
+            <label for="iterations">Iterations</label>
+            <input type="number" name="iterations" id="iterations" value="5" min="0" max="10"/>
+        </div>
+        <button id="run">Run</button>
+        </div>
+        <div id="output">
+        </div>
+        <div id="canvas-container">
+            <canvas id="canvas" width=500 height=500></canvas>
+        </div>
+        <div>
+            <button id="zoom_out">-</button>
+            <button id="zoom_in">+</button>
+        </div>
+        <script type="text/javascript" src="main.js"></script>
+    </body>
+</html>
