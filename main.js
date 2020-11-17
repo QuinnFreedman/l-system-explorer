@@ -38,7 +38,7 @@ function makeRuleInputs() {
     for (let v of variables) {
         if (alreadyHave.includes(v)) continue
         const div = document.createElement("div")
-        div.innerHTML = `<label for="rule_${v}">${v} →</label> <input type="text" name="rule_${v}" id="rule_${v}" />`
+        div.innerHTML = `<label for="rule_${v}">${v} →</label> <input type="text" name="rule_${v}" id="rule_${v}" value="${v}" />`
         div.dataset.variable = v
         div.className = "row"
         ruleDiv.appendChild(div)
@@ -322,7 +322,8 @@ function redrawCanvas(interactive) {
                 ctx.lineTo(0, -unit)
                 ctx.translate(0, -unit)
                 ctx.stroke()
-            } else if (!invis.includes(c)) {
+            } else if (c && c.trim() && !invis.includes(c)) {
+                console.log("Unknown variable", c)
                 alert(`Unknown variable: ${c}`)
                 return
             }
