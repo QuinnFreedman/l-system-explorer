@@ -87,11 +87,15 @@
             .questionmark:hover > * {
                 display:block;
             }
+
+            .row {
+                padding: 4px 0;
+            }
         </style>
     </head>
     <body>
         <h1>L-System Explorer</h1>
-        <div>
+        <div class="row">
             <label for="angle">Angle</label>
             <input type="number" name="angle" id="angle" value="45" min="-180" max="180"/>
             <div class="questionmark">
@@ -100,7 +104,7 @@
                 </p>
             </div>
         </div>
-        <div>
+        <div class="row">
             <label for="visible">Drawn Variables</label>
             <input type="text" name="visible" id="visible" value="A,B"/>
             <div class="questionmark">
@@ -109,7 +113,7 @@
                 </p>
             </div>
         </div>
-        <div>
+        <div class="row">
             <label for="invisible">Not-drawn Variables</label>
             <input type="text" name="invisible" id="invisible" />
             <div class="questionmark">
@@ -118,7 +122,7 @@
                 </p>
             </div>
         </div>
-        <div>
+        <div class="row">
             <label for="constants">Constants</label>
             <input type="text" name="constants" id="constants" value="+,-,[,]" disabled="true" />
             <div class="questionmark">
@@ -137,7 +141,7 @@
                 </div>
             </div>
         </div>
-        <div>
+        <div class="row">
             <label for="axium">Axium</label>
             <input type="text" name="axium" id="axium" value="A"/>
             <div class="questionmark">
@@ -155,14 +159,14 @@
             </div>
         </div>
         <div id="rules">
-            <div data-variable="A">
-                <div><label for="rule_A">A →</label> <input type="text" name="rule_A" id="rule_A" value="B[-A]+A"/></div>
+            <div data-variable="A" class="row">
+                <label for="rule_A">A →</label> <input type="text" name="rule_A" id="rule_A" value="B[-A]+A"/>
             </div>
-            <div data-variable="B">
-                <div><label for="rule_B">B →</label> <input type="text" name="rule_B" id="rule_B" value="BB"/></div>
+            <div data-variable="B" class="row">
+                <label for="rule_B">B →</label> <input type="text" name="rule_B" id="rule_B" value="BB"/>
             </div>
         </div>
-        <div>
+        <div class="row">
             <label for="iterations">Iterations</label>
             <input type="number" name="iterations" id="iterations" value="5" min="0" max="10"/>
         </div>

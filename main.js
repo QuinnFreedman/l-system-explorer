@@ -1,3 +1,4 @@
+"use strict";
 
 const angleInput = document.querySelector("#angle")
 const visibleInput = document.querySelector("#visible")
@@ -37,8 +38,9 @@ function makeRuleInputs() {
     for (let v of variables) {
         if (alreadyHave.includes(v)) continue
         const div = document.createElement("div")
-        div.innerHTML = `<div><label for="rule_${v}">${v} →</label> <input type="text" name="rule_${v}" id="rule_${v}" /></div>`
+        div.innerHTML = `<label for="rule_${v}">${v} →</label> <input type="text" name="rule_${v}" id="rule_${v}" />`
         div.dataset.variable = v
+        div.className = "row"
         ruleDiv.appendChild(div)
     }
 }
@@ -101,6 +103,7 @@ setTimeout(run, 100)
 
 window.uidCounter = 0
 window.activeNode = -1
+window.activeLevel = -1
 
 function Node(value, parentNode) {
     this.uniqueId = ++window.uidCounter
@@ -277,6 +280,7 @@ function redrawCanvas(interactive) {
 
     const instructions = window.nodeGraph[activeLevel]
     const variables = parseVars(visibleInput.value)
+    const invis = parseVars(invisibleInput.value)
     let i = 0
     for (let node of instructions) {
         for (let c of node.value) {
@@ -318,6 +322,9 @@ function redrawCanvas(interactive) {
                 ctx.lineTo(0, -unit)
                 ctx.translate(0, -unit)
                 ctx.stroke()
+            } else if (!invis.includes(c)) {
+                alert(`Unknown variable: ${c}`)
+                return
             }
         }
         i++
@@ -341,6 +348,7 @@ function expandLSystemGraph(list, rules, constants) {
     return newList
 }
 
+/*
 function expandLSystem(str, rules, constants) {
     let newStr = ""
     for (let c of str) {
@@ -352,6 +360,7 @@ function expandLSystem(str, rules, constants) {
     }
     return newStr
 }
+*/
 
 outputDiv.addEventListener("mouseleave", () => {
     window.activeNode = -1
