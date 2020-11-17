@@ -84,14 +84,14 @@ function run() {
         variables: parseVars(visible.value),
         hiddenVariables: parseVars(invisible.value),
         rules: {},
-        axium: axiumInput.value,
+        axium: axiumInput.value.replace(/−/g, "-"),
         constants: parseVars(constantsInput.value),
         iterations: iterations,
     }
 
     for (let v of args.variables.concat(args.hiddenVariables)) {
         const ruleInput = document.querySelector(`#rule_${v}`)
-        args.rules[v] = ruleInput.value
+        args.rules[v] = ruleInput.value.replace(/−/g, "-")
     }
 
     window.nodeGraph = generateGraph(args)
