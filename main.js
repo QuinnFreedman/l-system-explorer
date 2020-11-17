@@ -64,7 +64,7 @@ invisibleInput.addEventListener("keyup", onEnter(makeRuleInputs))
 document.querySelector("#run").addEventListener("click", run)
 
 function isTooBigForInteractive() {
-    return nodeGraph[nodeGraph.length - 1].length > 200
+    return nodeGraph[nodeGraph.length - 1].length > 1000
 }
 
 function run() {
@@ -147,6 +147,7 @@ function getDepth(node) {
     return depth
 }
 
+/*
 function getChildren(node) {
     let children = node.children
     for (let child of node.children) {
@@ -154,6 +155,7 @@ function getChildren(node) {
     }
     return children
 }
+*/
 
 function setupView(skipInteractive) {
     const graph = window.nodeGraph
@@ -198,30 +200,21 @@ function setupView(skipInteractive) {
     }
 }
 
-function getNodeClass(node) {
-    if (node.uniqueId === window.activeNode) {
-        return "active"
-    }
-    
-    let parents = getParents(node)
-    for (let p of parents) {
-        if (p.uniqueId === window.activeNode) {
-            return "parent-active"
+function parentIsActive(node) {
+    node = node.parentNode
+    while (node) {
+        if (node.uniqueId == window.activeNode) {
+            return true;
         }
+        node = node.parentNode
     }
-    
-    let children = getChildren(node)
-    for (let n of children) {
-        if (n.uniqueId === window.activeNode) {
-            return "child-active"
-        }
-    }
-    
-    return ""
+    return false
 }
 
 function updateView() {
     const graph = window.nodeGraph
+
+    let activeNode = null;
 
     let i = 0
     for (let leafList of graph) {
@@ -233,9 +226,24 @@ function updateView() {
         }
         for (let node of leafList) {
             const el = document.getElementById(`node_${node.uniqueId}`)
-            el.className = getNodeClass(node)
+            let className = ""
+            if (node.uniqueId === window.activeNode) {
+                className = "active"
+                activeNode = node
+            } else if (parentIsActive(node)) {
+                className = "parent-active"
+            }
+            el.className = className
         }
         i++
+    }
+
+    if (activeNode) {
+        for (let node of getParents(activeNode)) {
+            const el = document.getElementById(`node_${node.uniqueId}`)
+            let className = "child-active"
+            el.className = className
+        }
     }
 
     redrawCanvas(window.activeNode >= 0)
@@ -282,11 +290,10 @@ function redrawCanvas(interactive) {
                 ctx.restore()
             } else if (variables.includes(c)) {
                 if (interactive) {
-                    const status = getNodeClass(node)
-                    if (status === "active") {
+                    if (node.uniqueId === window.activeNode) {
                         ctx.strokeStyle = "gold"
                         ctx.lineWidth = 5
-                    } else if (status == "parent-active") {
+                    } else if (parentIsActive(node)) {
                         ctx.strokeStyle = "black"
                         ctx.lineWidth = 1
                     } else {
